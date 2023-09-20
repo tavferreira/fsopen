@@ -1,7 +1,7 @@
 # [Full Stack open](https://fullstackopen.com/en/)
 
 - [x] part0
-- [ ] part1
+- [x] part1
 - [ ] part2
 - [ ] part3
 - [ ] part4
