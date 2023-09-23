@@ -3,6 +3,8 @@ import axios from 'axios'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
+import personService from './services/persons'
+
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -11,19 +13,19 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
   const personExists = (name) => persons.some(person => person.name === name)
 
-  const sendToServer = (person) => axios.
-                                    post('http://localhost:3001/persons',person)
-                                    .then(response => {
-                                      setPersons(persons.concat(response.data))
+  const sendToServer = (person) => personService
+                                    .create(person)
+                                    .then(returnedPerson => {
+                                      setPersons(persons.concat(returnedPerson))
                                       setNewName('')
                                       setNewNumber('')
                                     })
