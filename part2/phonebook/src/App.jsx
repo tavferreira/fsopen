@@ -19,20 +19,34 @@ const App = () => {
       })
   }, [])
 
-  const personExists = (name) => persons.some(person => person.name === name)
-
+  const clearInputs = () => {
+    setNewName('')
+    setNewNumber('')
+  }
   const sendToServer = (person) => personService
                                     .create(person)
                                     .then(returnedPerson => {
                                       setPersons(persons.concat(returnedPerson))
-                                      setNewName('')
-                                      setNewNumber('')
+                                      clearInputs()
                                     })
+
+  const updatePerson = (personToUpdate) => {
+    if(window.confirm(`${personToUpdate.name} is already added to the phonebook, replace the old number with a new one?`)) {
+      personService
+        .update(personToUpdate)
+        .then(updatedPerson => {
+          const newPersons = persons.map(person => person.id !== personToUpdate.id ? person : updatedPerson)
+          setPersons(newPersons)
+        })
+      clearInputs()
+    }
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
-    const newPerson = {name: newName, number: newNumber}
-    personExists(newName) ? alert(`${newName} is already added to phonebook`): sendToServer(newPerson)  
+    const existingPerson = persons.find(person => person.name === newName)
+    const newPerson = {...existingPerson, name: newName, number: newNumber}
+    existingPerson ? updatePerson(newPerson) : sendToServer(newPerson)  
   }
 
   const deletePerson = (personToDelete) => {
