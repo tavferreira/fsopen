@@ -20,11 +20,18 @@ const App = () => {
 
   const personExists = (name) => persons.some(person => person.name === name)
 
+  const sendToServer = (person) => axios.
+                                    post('http://localhost:3001/persons',person)
+                                    .then(response => {
+                                      setPersons(persons.concat(response.data))
+                                      setNewName('')
+                                      setNewNumber('')
+                                    })
+
   const addPerson = (event) => {
     event.preventDefault()
-    personExists(newName) ? alert(`${newName} is already added to phonebook`): setPersons(persons.concat({name: newName, number: newNumber}))
-    setNewName('')
-    setNewNumber('')
+    const newPerson = {name: newName, number: newNumber}
+    personExists(newName) ? alert(`${newName} is already added to phonebook`): sendToServer(newPerson)  
   }
 
   const handlePersonChange = (event) => setNewName(event.target.value)
