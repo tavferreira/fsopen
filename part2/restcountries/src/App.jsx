@@ -1,56 +1,47 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Filter from './components/Filter'
+import Countries from './components/Countries'
+import Country from './components/Country'
 
-const Country = ({country}) => (
-  <>
-    <h1>{country.name.common}</h1>
-    <div>capital {country.capital}</div>
-    <div>area {country.area}</div>
-    <h3>languages:</h3>
-    <div><ul>{Object.values(country.languages).map(lang => <li key={lang}>{lang}</li>)}</ul></div>
-    <img src={country.flags.png}/>
-  </>
-)
-
-const Countries = ({countries, setSearch}) => (
-  <>
-    {countries.map(country => (
-        <div key={country.tld}>
-          {country.name.common} <button onClick={() => setSearch(country.name.common)}>show</button>
-        </div>
-      )
-    )}
-  </>
-)
-
-const FilterFeedback = ({countries, setSearch}) => {
-  const length = countries.length
-
-  if(length > 10) return <div>Too many matches, specify another filter</div>
-  if(length > 1 && length <= 10) return <Countries countries={countries} setSearch={setSearch} />
-  if(length === 1) return <Country country={countries[0]} />
-}
 function App() {
-  const [countries, setCountries] = useState(null)
+  const [data, setData] = useState(null)
   const [search, setSearch] = useState('')
+  const [country, setCountry] = useState(null)
+  const setSearchOnly = (e) => {
+    setSearch(e)
+     setCountry(null)
+  }
+  const selectCountry = (country) => {
+    setCountry(country)
+    setSearch('')
+  }
 
-  
   useEffect(() => {
     axios
       .get('https://studies.cs.helsinki.fi/restcountries/api/all')
       .then(response => {
-        setCountries(response.data)
+        setData(response.data)
       })
   },[])
 
-  if(countries === null) return null   
+  if(data === null) return null   
 
-  const filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(search.toLowerCase()))
+  const isEmptySearch = search === ''
+  const filteredCountries = data.filter(country => country.name.common.toLowerCase().includes(search.toLowerCase()))
+  
+  const numberOfResults = filteredCountries.length
+  const tooManyResults = numberOfResults > 10
+  const reasonableAmountOfResults = numberOfResults > 1 && numberOfResults <= 10
+  const justOneResult = numberOfResults === 1
 
   return (
     <>
-      find countries <input value={search} onChange={(e) => setSearch(e.target.value)} />
-      <FilterFeedback countries={filteredCountries} setSearch={setSearch} />
+      <Filter search={search} setSearch={setSearchOnly}/>
+      {!isEmptySearch && tooManyResults && <div>Too many matches, specify another filter</div>}
+      {!isEmptySearch && reasonableAmountOfResults && <Countries countries={filteredCountries} setCountry={selectCountry} />}
+      {!isEmptySearch && justOneResult && <Country country={filteredCountries[0]} />}
+      {isEmptySearch && country && <Country country={country} />}
     </>
   )
 }
