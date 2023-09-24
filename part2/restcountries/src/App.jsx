@@ -12,11 +12,22 @@ const Country = ({country}) => (
   </>
 )
 
-const FilterFeedback = ({countries}) => {
+const Countries = ({countries, setSearch}) => (
+  <>
+    {countries.map(country => (
+        <div key={country.tld}>
+          {country.name.common} <button onClick={() => setSearch(country.name.common)}>show</button>
+        </div>
+      )
+    )}
+  </>
+)
+
+const FilterFeedback = ({countries, setSearch}) => {
   const length = countries.length
 
   if(length > 10) return <div>Too many matches, specify another filter</div>
-  if(length > 1 && length <= 10) return <>{countries.map(country => <div key={country.tld}>{country.name.common}</div>)}</>
+  if(length > 1 && length <= 10) return <Countries countries={countries} setSearch={setSearch} />
   if(length === 1) return <Country country={countries[0]} />
 }
 function App() {
@@ -39,7 +50,7 @@ function App() {
   return (
     <>
       find countries <input value={search} onChange={(e) => setSearch(e.target.value)} />
-      <FilterFeedback countries={filteredCountries} />
+      <FilterFeedback countries={filteredCountries} setSearch={setSearch} />
     </>
   )
 }
