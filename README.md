@@ -2,7 +2,7 @@
 
 - [x] part0
 - [x] part1
-- [ ] part2
+- [X] part2
 - [ ] part3
 - [ ] part4
 - [ ] part5
