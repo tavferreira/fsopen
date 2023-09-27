@@ -3,7 +3,7 @@
 - [x] part0
 - [x] part1
 - [X] part2
-- [ ] part3
+- [x] part3 -> https://github.com/tavferreira/fsopen-part3
 - [ ] part4
 - [ ] part5
 - [ ] part6
