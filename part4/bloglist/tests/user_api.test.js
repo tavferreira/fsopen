@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const supertest = require('supertest')
+const assert = require('assert')
 const app = require('../app')
 const api = supertest(app)
 const User = require('../models/user')
@@ -58,5 +59,61 @@ describe('when there is initially one user in db', () => {
 
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toEqual(usersAtStart)
+  })
+
+  describe.only('user validation', () => {
+    test('username should have at least 3 chars', async () => {
+      const newUser = {
+        username: 'ml',
+        name: 'Matti Luukkainen',
+        password: 'salainen',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+      expect(response.body.error).toEqual('User validation failed: username: Path `username` (`ml`) is shorter than the minimum allowed length (3).')
+    })
+
+    test('username is required', async () => {
+      const newUser = {
+        name: 'Matti Luukkainen',
+        password: 'salainen',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+      expect(response.body.error).toEqual('User validation failed: username: Path `username` is required.')
+    })
+
+    test('username should have at least 3 chars', async () => {
+      const newUser = {
+        username: 'mluukkai',
+        name: 'Matti Luukkainen',
+        password: 'sa',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+      expect(response.body.error).toEqual('User validation failed: password is shorter than the minimum allowed length (3)')
+    })
+
+    test('username is required', async () => {
+      const newUser = {
+        username: 'mluukkai',
+        name: 'Matti Luukkainen',
+      }
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+      expect(response.body.error).toEqual('User validation failed: password is required')
+    })
   })
 })
