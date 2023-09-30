@@ -10,7 +10,12 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', (request, response) => {
-  const blog = new Blog(request.body)
+  const { body } = request
+  const blogData = {
+    ...body,
+    likes: body.likes || 0
+  }
+  const blog = new Blog(blogData)
 
   blog
     .save()

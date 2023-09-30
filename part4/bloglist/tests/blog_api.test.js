@@ -51,6 +51,22 @@ test('a valid blog can be added', async () => {
   expect(getResponse.body).toHaveLength(helper.initialBlogs.length + 1)
 })
 
+test('when adding new note, if likes prop is missing it defaults to 0', async () => {
+  const newBlog = {
+    author: 'Margaret Atwood',
+    url: 'www.matwood.com/blog',
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
