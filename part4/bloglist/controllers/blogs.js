@@ -26,8 +26,26 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   await Blog
     .findByIdAndDelete(id)
-    .then(() => {
-      response.status(204).end()
+    .then((deletedNote) => {
+      if (deletedNote) {
+        response.status(204).end()
+      } else {
+        response.status(404).end()
+      }
+    })
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  const { likes } = request.body
+
+  await Blog
+    .findByIdAndUpdate(request.params.id, { likes }, { new: true })
+    .then(updatedNote => {
+      if (updatedNote) {
+        response.json(updatedNote)
+      } else {
+        response.status(404).end()
+      }
     })
 })
 

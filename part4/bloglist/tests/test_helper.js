@@ -21,6 +21,12 @@ const initialBlogs = [
   },
 ]
 
+const existingId = async () => {
+  const blog = await Blog.findOne({ author: 'Ernest Hemingway' })
+
+  return blog._id.toString()
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon', url: 'www.domain.org' })
   await blog.save()
@@ -35,5 +41,5 @@ const blogsInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, existingId, nonExistingId, blogsInDb
 }

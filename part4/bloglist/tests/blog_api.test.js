@@ -69,7 +69,6 @@ describe('POST /api/blogs', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body.likes).toBe(0)
-
   })
 
   test('it should return 400 if missing title or url', async () => {
@@ -95,8 +94,29 @@ describe('DELETE /api/blogs/:id', () => {
     await api.delete(`/api/blogs/${id}`).expect(204)
   })
 
+  test('should return 404 if id does not exist ', async () => {
+    const nonExistingId = await helper.nonExistingId()
+
+    await api.delete(`/api/blogs/${nonExistingId}`).expect(404)
+  })
+})
+
+describe('PUT /api/blogs/:id', () => {
+  test('it should update likes for blog with existing id', async () => {
+    const likes = 15
+    const existingId = await helper.existingId()
+
+    const response = await api.put(`/api/blogs/${existingId}`)
+      .send({ likes })
+      .expect(200)
+
+    expect(response.body.likes).toBe(likes)
+  })
+
   test('should return 400 if id does not exist ', async () => {
-    await api.delete(`/api/blogs/${helper.nonExistingId}`).expect(400)
+    const nonExistingId = await helper.nonExistingId()
+
+    await api.put(`/api/blogs/${nonExistingId}`).send({ likes: 10 }).expect(404)
   })
 })
 
