@@ -1,10 +1,20 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
-content-type: application/json
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdmYiLCJpZCI6IjY1MThhYWMwNmQzYmQ0NWRiYzRjZjUxMCIsImlhdCI6MTY5NjExNjQwNn0.fxFYuXlIx1jmZQ2M2TkRMT3DlSHO5Kf41ryV7_ba_2k
 
 {
-    "title": "O meu blog",
+    "title": "O meu OUTRO blog",
     "author": "Coisito",
-    "url": "www.blog.pt",
-    "likes": 10,
-    "userId": "6518aac06d3bd45dbc4cf510"
+    "url": "www.blog.pt/outro-blog",
+    "likes": 100
+}
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "O meu OUTRO blog",
+    "author": "Coisito",
+    "url": "www.blog.pt/outro-blog",
+    "likes": 100
 }
