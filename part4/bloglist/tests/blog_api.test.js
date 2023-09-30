@@ -34,6 +34,7 @@ test('unique identifier property of the blog posts is named id', async () => {
 
 test('a valid blog can be added', async () => {
   const newBlog = {
+    title: 'How I wrote Foundation',
     author: 'Isaac Asimov',
     url: 'www.asimov.com/thoughts',
     likes: 0
@@ -53,6 +54,7 @@ test('a valid blog can be added', async () => {
 
 test('when adding new note, if likes prop is missing it defaults to 0', async () => {
   const newBlog = {
+    title: 'Reflections',
     author: 'Margaret Atwood',
     url: 'www.matwood.com/blog',
   }
@@ -67,6 +69,18 @@ test('when adding new note, if likes prop is missing it defaults to 0', async ()
 
 })
 
+test('it should return 400 if missing title or url', async () => {
+  const newBlog = {
+    author: 'Margaret Atwood',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
-})
+}, 10000)
