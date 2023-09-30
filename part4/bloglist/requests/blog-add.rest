@@ -2,9 +2,9 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-    "title": "Another blog",
-    "author": "El Influencer",
-    "url": "www.miblogeslahostia.com",
-    "likes": 1,
-    "userId": "651898731cbc16a57cee82c6"
+    "title": "O meu blog",
+    "author": "Coisito",
+    "url": "www.blog.pt",
+    "likes": 10,
+    "userId": "6518aac06d3bd45dbc4cf510"
 }
