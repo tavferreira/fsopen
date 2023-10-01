@@ -18,3 +18,14 @@ Content-Type: application/json
     "url": "www.blog.pt/outro-blog",
     "likes": 100
 }
+###
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdmYiLCJpZCI6IjY1MThhYWMwNmQzYmQ0NWRiYzRjZjUxMCIsImlhdCI6MTY5NjExNjQwNn0.fxFYuXlIx1jmZQ2M2TkRMT3DlSHO5Kf41ryV7_ba_2k
+
+{
+    "title": "this is a test",
+    "author": "Mika",
+    "url": "www.testblog.fi",
+    "likes": 100
+}
