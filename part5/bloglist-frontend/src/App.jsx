@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,8 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -28,6 +31,18 @@ const App = () => {
     }
   }, [])
 
+  const setNotification = (message, type) => {
+    setNotificationMessage(message)
+    setNotificationType(type)
+  }
+
+  const clearNotification = () => {
+    return setTimeout(() => {
+      setNotificationMessage(null)
+      setNotificationType(null)
+    }, 5000)
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -44,11 +59,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+    } catch ({ response }) {
+      setNotification(response.data.error, 'error')
+      clearNotification()
     }
   }
 
@@ -57,15 +70,24 @@ const App = () => {
     window.location.reload()
   }
 
-  const addBlog = () => {
-    event.preventDefault()
-    blogService.create({ title: blogTitle, author: blogAuthor, url: blogUrl })
+  const addBlog = async (e) => {
+    e.preventDefault()
+    try {
+      const addedBlog = await blogService.create({ title: blogTitle, author: blogAuthor, url: blogUrl })
+      setNotification(`a new blog ${addedBlog.title} added`, 'info')
+    } catch ({ response }) {
+      setNotification(response.data.error, 'error')
+    }
+    setBlogTitle('')
+    setBlogAuthor('')
+    setBlogUrl('')
   }
 
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={notificationMessage} type={notificationType} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -93,7 +115,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
+      <h2>blogs</h2>
+      <Notification message={notificationMessage} type={notificationType} />
       <p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>
       <form onSubmit={addBlog}>
         <div>
