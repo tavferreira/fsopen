@@ -1,2 +1,11 @@
-DELETE http://localhost:3003/api/blogs/65185e30c HTTP/1.1
+DELETE http://localhost:3003/api/blogs/6518af0f85568c58fcf2c4c0 HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdmYiLCJpZCI6IjY1MThhYWMwNmQzYmQ0NWRiYzRjZjUxMCIsImlhdCI6MTY5NjExNjQwNn0.fxFYuXlIx1jmZQ2M2TkRMT3DlSHO5Kf41ryV7_ba_2k
+###
+DELETE http://localhost:3003/api/blogs/123 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdmYiLCJpZCI6IjY1MThhYWMwNmQzYmQ0NWRiYzRjZjUxMCIsImlhdCI6MTY5NjExNjQwNn0.fxFYuXlIx1jmZQ2M2TkRMT3DlSHO5Kf41ryV7_ba_2k
+###
+DELETE http://localhost:3003/api/blogs/6518ab787808d8db33457934 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhdmYiLCJpZCI6IjY1MThhYWMwNmQzYmQ0NWRiYzRjZjUxMCIsImlhdCI6MTY5NjExNjQwNn0.fxFYuXlIx1jmZQ2M2TkRMT3DlSHO5Kf41ryV7_ba_2k
