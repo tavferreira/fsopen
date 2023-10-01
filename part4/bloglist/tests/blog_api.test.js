@@ -1,16 +1,61 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const users = [
+  {
+    username: 'root',
+    password: 'secret'
+  },
+  {
+    username: 'pepito',
+    password: 'secreto'
+  }
+]
+
+const getUserToken = async (index) => {
+  const { username, password } = users[index]
+  const login = await api
+    .post('/api/login')
+    .send({
+      username,
+      password
+    })
+
+  return login.body.token
+}
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  const initialUsers = [
+    {
+      username: users[0].username,
+      name: 'Superuser',
+      passwordHash: await bcrypt.hash(users[0].password, 10),
+      id: '651898731cbc16a57cee82c6',
+    },
+    {
+      username: users[1].username,
+      name: 'Jose Manuel',
+      passwordHash: await bcrypt.hash(users[1].password, 10),
+      id: '6518aac06d3bd45dbc4cf510'
+    }
+  ]
+
+  const userObjects = initialUsers.map(user => new User(user))
+  const userPromiseArray = userObjects.map(user => user.save())
+  await Promise.all(userPromiseArray)
 
   const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
+  const blogPromiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(blogPromiseArray)
 })
 
 describe('GET /api/blogs', () => {
@@ -40,11 +85,12 @@ describe('POST /api/blogs', () => {
       title: 'How I wrote Foundation',
       author: 'Isaac Asimov',
       url: 'www.asimov.com/thoughts',
-      likes: 0
+      likes: 0,
     }
 
     const postResponse = await api
       .post('/api/blogs')
+      .set({ Authorization: `Bearer ${await getUserToken(1)}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -64,6 +110,7 @@ describe('POST /api/blogs', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set({ Authorization: `Bearer ${await getUserToken(1)}` })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -79,25 +126,47 @@ describe('POST /api/blogs', () => {
 
     await api
       .post('/api/blogs')
+      .set({ Authorization: `Bearer ${await getUserToken(1)}` })
       .send(newBlog)
       .expect(400)
+  })
+
+  test('it should return 401 if missing token', async () => {
+    const newBlog = {
+      author: 'Margaret Atwood',
+      likes: 1
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
   })
 })
 
 describe('DELETE /api/blogs/:id', () => {
-  test('it should delete blog with existing id', async () => {
-    const response = await api
-      .get('/api/blogs')
+  test('it should delete blog with existing id if requested by owner', async () => {
+    const id = helper.initialBlogs[0].id
 
-    const id = response.body[0].id
-
-    await api.delete(`/api/blogs/${id}`).expect(204)
+    await api.delete(`/api/blogs/${id}`)
+      .set({ Authorization: `Bearer ${await getUserToken(0)}` })
+      .expect(204)
   })
 
   test('should return 404 if id does not exist ', async () => {
     const nonExistingId = await helper.nonExistingId()
 
-    await api.delete(`/api/blogs/${nonExistingId}`).expect(404)
+    await api
+      .delete(`/api/blogs/${nonExistingId}`)
+      .set({ Authorization: `Bearer ${await getUserToken(0)}` })
+      .expect(404)
+  })
+
+  test('should return 401 if token is not provided', async () => {
+    const id = helper.initialBlogs[0].id
+
+    await api.delete(`/api/blogs/${id}`)
+      .expect(401)
   })
 })
 

@@ -1,12 +1,9 @@
 const bcrypt = require('bcrypt')
 const helper = require('./test_helper')
 const supertest = require('supertest')
-const assert = require('assert')
 const app = require('../app')
 const api = supertest(app)
 const User = require('../models/user')
-
-//...
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -61,7 +58,7 @@ describe('when there is initially one user in db', () => {
     expect(usersAtEnd).toEqual(usersAtStart)
   })
 
-  describe.only('user validation', () => {
+  describe('user validation', () => {
     test('username should have at least 3 chars', async () => {
       const newUser = {
         username: 'ml',
