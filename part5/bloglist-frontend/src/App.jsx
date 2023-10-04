@@ -15,12 +15,10 @@ const App = () => {
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
 
-  const refreshBlogs = () => blogService.getAll().then(blogs =>
-    setBlogs(blogs)
-  )
-
   useEffect(() => {
-    refreshBlogs()
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )  
   }, [])
 
   useEffect(() => {
@@ -88,7 +86,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const addedblog = await blogService.create(blogObject)
-      refreshBlogs()
+      setBlogs(blogs.concat({...addedblog, user: { name: user.name }}))
       setNotification(`a new blog ${addedblog.title} added`, 'info')
       blogFormRef.current.toggleVisibility()
     } catch ({ response }) {
