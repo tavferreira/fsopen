@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a,b) => b.likes - a.likes))
     )  
   }, [])
 
@@ -86,7 +86,7 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const addedblog = await blogService.create(blogObject)
-      setBlogs(blogs.concat({...addedblog, user: { name: user.name }}))
+      setBlogs(blogs.concat({...addedblog, user: { name: user.name }}).sort((a,b) => b.likes - a.likes))
       setNotification(`a new blog ${addedblog.title} added`, 'info')
       blogFormRef.current.toggleVisibility()
     } catch ({ response }) {
@@ -100,6 +100,25 @@ const App = () => {
     </Togglable>
   )
 
+  const likeBlog = async (blog) => {
+    try {
+      await blogService.like(blog)
+    } catch {
+      setNotification('Something went wrong. Please try again.', 'error')
+    }
+  }
+
+  const removeBlog = async (blogToDelete) => {
+    if(window.confirm(`Remove blog ${blogToDelete.title}?`)){
+      try {
+        await blogService.remove(blogToDelete.id)
+        setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id))
+      } catch ({ response }) {
+        setNotification(`Could not remove blog: ${response.data.error}`, 'error')
+      }
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -107,9 +126,7 @@ const App = () => {
       {!user && loginForm()} 
       {user && <div><p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>{blogForm()}</div>}
       <br />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      {blogs.map(blog => <Blog key={blog.id} blog={blog} ownedBlog={blog.user.name === user.name} actions={{likeBlog,removeBlog}}/>)}
     </div>
   )
 }
