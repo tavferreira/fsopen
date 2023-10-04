@@ -14,14 +14,14 @@ const Blog = ({ blog }) => {
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-  console.log(blog.user)
+
   return (
   <div style={blogStyle}>
     {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
     <div style={{ display: visible ? '' : 'none'}}>
       <div>{blog.url}</div>
-      <div>likes {blog.likes}</div>
-      {blog.user && blog.user.name && <div>blog.user.name</div>}
+      <div>likes {blog.likes} <button>like</button></div>
+      <div>{blog.user.name}</div>
     </div>
   </div>  
 )}

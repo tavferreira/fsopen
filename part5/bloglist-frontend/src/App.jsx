@@ -12,16 +12,16 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationType, setNotificationType] = useState(null)
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+  const refreshBlogs = () => blogService.getAll().then(blogs =>
+    setBlogs(blogs)
+  )
 
+  useEffect(() => {
+    refreshBlogs()
+  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -74,20 +74,21 @@ const App = () => {
   }
   
   const loginForm = () => (
-      <Togglable buttonLabel='login'>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
+    <Togglable buttonLabel='login'>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </Togglable>
   )
 
   const addBlog = async (blogObject) => {
     try {
       const addedblog = await blogService.create(blogObject)
+      refreshBlogs()
       setNotification(`a new blog ${addedblog.title} added`, 'info')
       blogFormRef.current.toggleVisibility()
     } catch ({ response }) {
