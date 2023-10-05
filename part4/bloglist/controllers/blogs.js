@@ -31,14 +31,13 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 
   const blog = await Blog.findById(id)
 
-  if(!blog) response.status(404).end()
+  if(!blog) return response.status(404).end()
 
   if(blog.user.toString() === user.id.toString()) {
-    const res = await Blog.findByIdAndDelete({ _id: id })
-    console.log(res)
-    response.status(204).end()
+    await Blog.findByIdAndDelete({ _id: id })
+    return response.status(204).end()
   } else {
-    response.status(401).json({ error: 'token invalid' })
+    return response.status(401).json({ error: 'token invalid' })
   }
 })
 
