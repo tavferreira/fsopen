@@ -19,6 +19,11 @@ describe('Blog', () => {
     'id': '65189bda3cb493ec3afe48a7'
   }
 
+  const mockActions = {
+    likeBlog: jest.fn(),
+    removeBlog: jest.fn()
+  }
+
   test('renders title and author', () => {
     const { container } = render(<Blog blog={blog} />)
 
@@ -47,5 +52,17 @@ describe('Blog', () => {
 
     const likes = screen.getByText(`likes ${blog.likes}`)
     expect(likes).toBeDefined()
+  })
+
+  test('clicking the like twice event handler should be called twice', async () => {
+    const { container } = render(<Blog blog={blog} actions={mockActions}/>)
+
+
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.click(button)
+    await user.click(button)
+
+    expect(mockActions.likeBlog.mock.calls).toHaveLength(2)
   })
 })
