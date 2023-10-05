@@ -14,23 +14,23 @@ const Blog = ({ blog, ownedBlog, actions }) => {
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-  
+
   const updateLike = (blog) => {
     actions.likeBlog(blogToRender)
-    setBlogToRender({...blog,likes: blog.likes + 1})
+    setBlogToRender({ ...blog,likes: blog.likes + 1 })
 
-  } 
+  }
 
   return (
-  <div style={blogStyle}>
-    {blogToRender.title} {blogToRender.author} <button onClick={toggleVisibility}>view</button>
-    <div style={{ display: visible ? '' : 'none'}}>
-      <div>{blogToRender.url}</div>
-      <div>likes {blogToRender.likes} <button onClick={() => updateLike(blogToRender)}>like</button></div>
-      <div>{blogToRender.user.name}</div>
-      {ownedBlog && <div><button onClick={() => actions.removeBlog(blogToRender)}>remove</button></div>}
+    <div style={blogStyle}>
+      {blogToRender.title} {blogToRender.author} <button onClick={toggleVisibility}>view</button>
+      <div style={{ display: visible ? '' : 'none' }}>
+        <div>{blogToRender.url}</div>
+        <div>likes {blogToRender.likes} <button onClick={() => updateLike(blogToRender)}>like</button></div>
+        <div>{blogToRender.user.name}</div>
+        {ownedBlog && <div><button onClick={() => actions.removeBlog(blogToRender)}>remove</button></div>}
+      </div>
     </div>
-  </div>  
-)}
+  )}
 
 export default Blog

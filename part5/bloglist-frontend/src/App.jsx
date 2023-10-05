@@ -18,7 +18,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs.sort((a,b) => b.likes - a.likes))
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     window.location.reload()
   }
-  
+
   const loginForm = () => (
     <Togglable buttonLabel='login'>
       <LoginForm
@@ -86,14 +86,14 @@ const App = () => {
   const addBlog = async (blogObject) => {
     try {
       const addedblog = await blogService.create(blogObject)
-      setBlogs(blogs.concat({...addedblog, user: { name: user.name }}).sort((a,b) => b.likes - a.likes))
+      setBlogs(blogs.concat({ ...addedblog, user: { name: user.name } }).sort((a,b) => b.likes - a.likes))
       setNotification(`a new blog ${addedblog.title} added`, 'info')
       blogFormRef.current.toggleVisibility()
     } catch ({ response }) {
       setNotification(response.data.error, 'error')
     }
   }
-  
+
   const blogForm = () => (
     <Togglable buttonLabel='new blog' ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
@@ -123,10 +123,10 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification message={notificationMessage} type={notificationType} />
-      {!user && loginForm()} 
+      {!user && loginForm()}
       {user && <div><p>{user.name} logged in<button onClick={handleLogout}>logout</button></p>{blogForm()}</div>}
       <br />
-      {blogs.map(blog => <Blog key={blog.id} blog={blog} ownedBlog={blog.user.name === user.name} actions={{likeBlog,removeBlog}}/>)}
+      {blogs.map(blog => <Blog key={blog.id} blog={blog} ownedBlog={blog.user.name === user.name} actions={{ likeBlog,removeBlog }}/>)}
     </div>
   )
 }
