@@ -2,8 +2,10 @@ import React from 'react'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
+import userEvent from '@testing-library/user-event'
 
-test('renders title and author', () => {
+
+describe('Blog', () => {
   const blog = {
     'title': 'Another blog',
     'author': 'El Influencer',
@@ -17,14 +19,33 @@ test('renders title and author', () => {
     'id': '65189bda3cb493ec3afe48a7'
   }
 
-  const { container } = render(<Blog blog={blog} />)
+  test('renders title and author', () => {
+    const { container } = render(<Blog blog={blog} />)
 
-  const title = screen.getByText(blog.title, { exact: false })
-  expect(title).toBeDefined()
+    const title = screen.getByText(blog.title, { exact: false })
+    expect(title).toBeDefined()
 
-  const author = screen.getByText(blog.author, { exact: false })
-  expect(author).toBeDefined()
+    const author = screen.getByText(blog.author, { exact: false })
+    expect(author).toBeDefined()
 
-  const div = container.querySelector('.togglableContent')
-  expect(div).toHaveStyle('display: none')
+    const div = container.querySelector('.togglableContent')
+    expect(div).toHaveStyle('display: none')
+  })
+
+  test('after clicking the button, children are displayed', async () => {
+    const { container } = render(<Blog blog={blog} />)
+
+    const user = userEvent.setup()
+    const button = screen.getByText('view')
+    await user.click(button)
+
+    const div = container.querySelector('.togglableContent')
+    expect(div).not.toHaveStyle('display: none')
+
+    const url = screen.getByText(blog.url)
+    expect(url).toBeDefined()
+
+    const likes = screen.getByText(`likes ${blog.likes}`)
+    expect(likes).toBeDefined()
+  })
 })
