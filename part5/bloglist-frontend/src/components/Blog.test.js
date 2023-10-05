@@ -4,7 +4,6 @@ import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
 
-
 describe('Blog', () => {
   const blog = {
     'title': 'Another blog',
@@ -55,7 +54,7 @@ describe('Blog', () => {
   })
 
   test('clicking the like twice event handler should be called twice', async () => {
-    const { container } = render(<Blog blog={blog} actions={mockActions}/>)
+    render(<Blog blog={blog} actions={mockActions}/>)
 
 
     const user = userEvent.setup()
