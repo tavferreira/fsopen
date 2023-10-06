@@ -74,7 +74,7 @@ describe('Blog app', function() {
         })
       })
 
-      it.only('A blog can be liked', function() {
+      it('A blog can be liked', function() {
         cy.contains('view').click()
 
         cy.get('.likes')
@@ -83,6 +83,15 @@ describe('Blog app', function() {
 
         cy.get('.likes')
           .should('contain','likes 1')
+      })
+
+      it('A blog can be deleted by its owner', function() {
+        cy.contains('view').click()
+
+        cy.contains('remove').as('btn')
+        cy.get('@btn').click()
+
+        cy.get('html').should('not.contain', 'I love my pants')
       })
     })
   })
