@@ -5,7 +5,7 @@
 - [X] part2
 - [x] part3 -> https://github.com/tavferreira/fsopen-part3
 - [x] part4
-- [ ] part5
+- [x] part5
 - [ ] part6
 - [ ] part7
 - [ ] part8
