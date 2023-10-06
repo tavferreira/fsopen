@@ -21,8 +21,8 @@ describe('Blog app', function() {
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
       cy.contains('login').click()
-      cy.get('input:first').type('mluukkai')
-      cy.get('input:last').type('salainen')
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
       cy.get('#login-button').click()
 
       cy.contains('Matti Luukkainen logged in')
@@ -40,6 +40,32 @@ describe('Blog app', function() {
         .and('have.css', 'border-style', 'solid')
 
       cy.get('html').should('not.contain', 'Matti Luukkainen logged in')
+    })
+  })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.contains('login').click()
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+    })
+
+    it.only('A blog can be created', function() {
+      cy.contains('new blog').click()
+      cy.get('#title').type('I love my pants')
+      cy.get('#author').type('Mr Fancy Pants')
+      cy.get('#url').type('www.mybloghere.com')
+
+      cy.contains('save').click()
+      cy.get('.info')
+        .should('contain','a new blog I love my pants added')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid')
+
+      cy.get('.blog')
+        .should('contain','I love my pants')
+      cy.contains('view')
     })
   })
 })

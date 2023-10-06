@@ -22,7 +22,7 @@ const Blog = ({ blog, ownedBlog, actions }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {blogToRender.title} {blogToRender.author} <button onClick={toggleVisibility}>view</button>
       <div style={{ display: visible ? '' : 'none' }} className="togglableContent">
         <div className="url">{blogToRender.url}</div>
