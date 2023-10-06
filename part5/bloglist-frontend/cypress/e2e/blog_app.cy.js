@@ -1,12 +1,11 @@
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.createUser({
       name: 'Matti Luukkainen',
       username: 'mluukkai',
       password: 'salainen'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users/', user)
+    })
     cy.visit('http://localhost:5173')
   })
 
@@ -88,10 +87,29 @@ describe('Blog app', function() {
       it('A blog can be deleted by its owner', function() {
         cy.contains('view').click()
 
+        cy.get('.togglableContent')
+          .should('contain','remove')
+
         cy.contains('remove').as('btn')
         cy.get('@btn').click()
 
         cy.get('html').should('not.contain', 'I love my pants')
+      })
+
+      it('A blog can NOT be deleted by someone else than the owner', function() {
+        cy.logout()
+        cy.createUser({
+          name: 'Another user',
+          username: 'anuser',
+          password: 'salainen'
+        })
+        cy.login({ username: 'anuser', password: 'salainen' })
+
+        cy.contains('view').as('btn')
+        cy.get('@btn').click()
+
+        cy.get('.togglableContent')
+          .should('not.contain','remove')
       })
     })
   })
