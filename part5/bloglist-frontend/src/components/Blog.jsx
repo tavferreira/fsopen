@@ -23,7 +23,7 @@ const Blog = ({ blog, ownedBlog, actions }) => {
 
   return (
     <div className="blog" style={blogStyle}>
-      {blogToRender.title} {blogToRender.author} <button onClick={toggleVisibility}>view</button>
+      {blogToRender.title} {blogToRender.author} <button id="viewButton" onClick={toggleVisibility}>view</button>
       <div style={{ display: visible ? '' : 'none' }} className="togglableContent">
         <div className="url">{blogToRender.url}</div>
         <div className="likes">likes {blogToRender.likes} <button id="likeButton" onClick={() => updateLike(blogToRender)}>like</button></div>

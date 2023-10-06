@@ -71,6 +71,16 @@ describe('Blog app', function() {
           author: 'Mr Fancy Pants',
           url: 'www.mybloghere.com'
         })
+        cy.createBlog({
+          title: 'I love pants too',
+          author: 'Mr Smart Pants',
+          url: 'www.pantsaregreat.com'
+        })
+        cy.createBlog({
+          title: 'Pants suck!',
+          author: 'Shortie',
+          url: 'www.shortsforlife.com'
+        })
       })
 
       it('A blog can be liked', function() {
@@ -110,6 +120,41 @@ describe('Blog app', function() {
 
         cy.get('.togglableContent')
           .should('not.contain','remove')
+      })
+
+      it.only('Should sort blogs by amount of likes in descending order', function() {
+        cy.get('.blog').eq(0).within(() => {cy.get('#viewButton').as('viewBtn1')})
+        cy.get('.blog').eq(0).within(() => {cy.get('#likeButton').as('likeBtn1')})
+
+        cy.get('.blog').eq(1).within(() => {cy.get('#viewButton').as('viewBtn2')})
+        cy.get('.blog').eq(1).within(() => {cy.get('#likeButton').as('likeBtn2')})
+
+        cy.get('.blog').eq(2).within(() => {cy.get('#viewButton').as('viewBtn3')})
+        cy.get('.blog').eq(2).within(() => {cy.get('#likeButton').as('likeBtn3')})
+
+        cy.get('@viewBtn1').click()
+        cy.get('@likeBtn1')
+          .click()
+          .click()
+          .click()
+
+        cy.get('@viewBtn2').click()
+        cy.get('@likeBtn2')
+          .click()
+          .click()
+          .click()
+          .click()
+
+        cy.get('@viewBtn3').click()
+        cy.get('@likeBtn3')
+          .click()
+          .click()
+
+        cy.reload()
+
+        cy.get('.blog').eq(0).should('contain', 'I love pants too')
+        cy.get('.blog').eq(1).should('contain', 'I love my pants')
+        cy.get('.blog').eq(2).should('contain', 'Pants suck!')
       })
     })
   })
