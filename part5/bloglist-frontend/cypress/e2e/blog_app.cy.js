@@ -45,13 +45,10 @@ describe('Blog app', function() {
 
   describe('When logged in', function() {
     beforeEach(function() {
-      cy.contains('login').click()
-      cy.get('#username').type('mluukkai')
-      cy.get('#password').type('salainen')
-      cy.get('#login-button').click()
+      cy.login({ username: 'mluukkai', password: 'salainen' })
     })
 
-    it.only('A blog can be created', function() {
+    it('A blog can be created', function() {
       cy.contains('new blog').click()
       cy.get('#title').type('I love my pants')
       cy.get('#author').type('Mr Fancy Pants')
@@ -66,6 +63,27 @@ describe('Blog app', function() {
       cy.get('.blog')
         .should('contain','I love my pants')
       cy.contains('view')
+    })
+
+    describe('and a blog exists', function() {
+      beforeEach(function() {
+        cy.createBlog({
+          title: 'I love my pants',
+          author: 'Mr Fancy Pants',
+          url: 'www.mybloghere.com'
+        })
+      })
+
+      it.only('A blog can be liked', function() {
+        cy.contains('view').click()
+
+        cy.get('.likes')
+          .should('contain','likes 0')
+        cy.get('#likeButton').click()
+
+        cy.get('.likes')
+          .should('contain','likes 1')
+      })
     })
   })
 })
